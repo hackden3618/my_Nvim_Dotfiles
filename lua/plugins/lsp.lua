@@ -25,58 +25,41 @@ return {
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 			-- LSP keymaps (set when LSP attaches)
-			local on_attach = function(_, bufnr)
-				local opts = { buffer = bufnr, noremap = true, silent = true }
-				vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-				vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-				vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-				vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-				vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-				vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, opts)
-			end
+			vim.api.nvim_create_autocmd("LspAttach", {
+				callback = function(args)
+					local bufnr = args.buf
+					local opts = { buffer = bufnr, noremap = true, silent = true }
+					
+					vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+					vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+					vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+					vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, opts)
+				end,
+			})
 
-			local lspconfig = require("lspconfig")
-
-			-- Lua
-			lspconfig.lua_ls.setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
-				settings = {
-					Lua = {
-						diagnostics = { globals = { "vim" } },
+			-- Server configurations using new API
+			local servers = {
+				lua_ls = {
+					settings = {
+						Lua = {
+							diagnostics = { globals = { "vim" } },
+						},
 					},
 				},
-			})
+				clangd = {},
+				jdtls = {},
+				ts_ls = {},
+				html = {},
+				cssls = {},
+			}
 
-			-- C/C++
-			lspconfig.clangd.setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
-			})
-
-			-- Java (basic setup, we'll enhance this later)
-			lspconfig.jdtls.setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
-			})
-
-			-- TypeScript/JavaScript
-			lspconfig.ts_ls.setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
-			})
-
-			-- HTML
-			lspconfig.html.setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
-			})
-
-			-- CSS
-			lspconfig.cssls.setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
-			})
+			-- Setup each server
+			for server, config in pairs(servers) do
+				config.capabilities = capabilities
+				require("lspconfig")[server].setup(config)
+			end
 		end,
 	},
 }

@@ -12,20 +12,13 @@ return {
 				close_on_exit = true,
 			})
 
-			local Terminal = require("toggleterm.terminal").Terminal
-
-			-- Live server terminal that opens in project directory
-			local live_server = Terminal:new({
-				cmd = "live-server " .. vim.fn.getcwd(),
-				hidden = true,
-				direction = "float",
-				on_open = function(term)
-					vim.cmd("startinsert!")
-				end,
-			})
-
+			-- Live server function that uses current file's directory
 			function _LIVE_SERVER_TOGGLE()
-				live_server:toggle()
+				local file_dir = vim.fn.expand("%:p:h")  -- Get directory of current file
+				local cmd = "live-server " .. vim.fn.shellescape(file_dir)
+				
+				vim.cmd("split")
+				vim.cmd("term " .. cmd)
 			end
 
 			vim.keymap.set("n", "<leader>ls", "<cmd>lua _LIVE_SERVER_TOGGLE()<CR>", { desc = "Toggle Live Server" })
