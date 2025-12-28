@@ -9,57 +9,59 @@ return {
 		config = function()
 			-- Setup Mason first
 			require("mason").setup()
-			require("mason-lspconfig").setup({
-				ensure_installed = {
-					"lua_ls",      -- Lua
-					"jdtls",       -- Java
-					"clangd",      -- C/C++
-					"ts_ls",       -- TypeScript/JavaScript
-					"html",        -- HTML
-					"cssls",       -- CSS
-				},
-				automatic_installation = true,
-			})
 
 			-- Capabilities for autocompletion
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-			-- LSP keymaps (set when LSP attaches)
+			-- LSP keymaps using LspAttach autocmd
 			vim.api.nvim_create_autocmd("LspAttach", {
-				callback = function(args)
-					local bufnr = args.buf
-					local opts = { buffer = bufnr, noremap = true, silent = true }
+				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+				callback = function(ev)
+					local opts = { buffer = ev.buf, noremap = true, silent = true }
 					
 					vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+					vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, opts)
 					vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 					vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 					vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, opts)
 				end,
 			})
 
-			-- Server configurations using new API
-			local servers = {
-				lua_ls = {
-					settings = {
-						Lua = {
-							diagnostics = { globals = { "vim" } },
-						},
-					},
+			-- Mason LSP setup with handlers (no more deprecation warnings!)
+			require("mason-lspconfig").setup({
+				ensure_installed = {
+					"lua_ls",
+					"jdtls",
+					"clangd",
+					"ts_ls",
+					"html",
+					"cssls",
 				},
-				clangd = {},
-				jdtls = {},
-				ts_ls = {},
-				html = {},
-				cssls = {},
-			}
-
-			-- Setup each server
-			for server, config in pairs(servers) do
-				config.capabilities = capabilities
-				require("lspconfig")[server].setup(config)
-			end
+				automatic_installation = true,
+				handlers = {
+					-- Default handler for all servers
+					function(server_name)
+						require("lspconfig")[server_name].setup({
+							capabilities = capabilities,
+						})
+					end,
+					
+					-- Lua-specific config
+					["lua_ls"] = function()
+						require("lspconfig").lua_ls.setup({
+							capabilities = capabilities,
+							settings = {
+								Lua = {
+									diagnostics = {
+										globals = { "vim" },
+									},
+								},
+							},
+						})
+					end,
+				},
+			})
 		end,
 	},
 }
