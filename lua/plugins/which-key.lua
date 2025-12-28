@@ -45,33 +45,35 @@ return {
 			{ "<leader>dc", desc = "Continue/Start" },
 			{ "<leader>di", desc = "Step into" },
 			{ "<leader>do", desc = "Step over" },
-			{ "<leader>dO", desc = "Step out" },
-			{ "<leader>dt", desc = "Terminate" },
-			{ "<leader>du", desc = "Toggle UI" },
-			
-			-- Java specific
-			{ "<leader>j", group = "Java" },
-			{ "<leader>jo", desc = "Organize imports" },
-			{ "<leader>jv", desc = "Extract variable" },
-			{ "<leader>jc", desc = "Extract constant" },
-			{ "<leader>jm", desc = "Extract method" },
-			
-			-- Run code
-			{ "<leader>r", group = "Run" },
-			{ "<leader>rj", desc = "Run Java" },
-			{ "<leader>rjd", desc = "Run Java (JDBC)" },
-			{ "<leader>rc", desc = "Run C" },
-			{ "<leader>rp", desc = "Run Python" },
-			
-			-- Live server
-			{ "<leader>l", group = "Live" },
-			{ "<leader>ls", desc = "Live server" },
-			
-			-- Git
-			{ "<leader>g", group = "Git" },
-			
-			-- Terminal
-			{ "<leader>t", group = "Terminal" },
-		})
-	end,
+            { "<leader>dO", desc = "Step out" },
+            { "<leader>dt", desc = "Terminate" },
+            { "<leader>du", desc = "Toggle UI" },
+
+            -- Java specific
+            { "<leader>j", group = "Java" },
+            { "<leader>jo", desc = "Organize imports" },
+            { "<leader>jv", desc = "Extract variable" },
+            { "<leader>jc", desc = "Compile all Java files" },
+            { "<leader>jcd", desc = "Compile with JDBC" },
+            { "<leader>jm", desc = "Extract method" },
+            -- Run code
+            { "<leader>r", group = "Run" },
+            { "<leader>rj", desc = "Run Java" },
+            { "<leader>rjd", desc = "Run Java (JDBC)" },
+            { "<leader>rc", desc = "Run C" },
+            { "<leader>rp", desc = "Run Python" },
+
+            -- Live server
+            { "<leader>l", group = "Live" },
+            { "<leader>ls", desc = "Live server" },
+
+            -- Git
+            { "<leader>g", group = "Git" },
+
+            -- Terminal
+            { "<leader>t", group = "Terminal" },
+
+
+        })
+    end,
 }
