@@ -17,3 +17,5 @@ vim.keymap.set("n","<leader>wk","<C-w><C-k>", { desc = "Move focus to top window
 --keymap for escaping the search highlight
 vim.keymap.set("n","<Esc>","<cmd>nohlsearch<cr>", { desc = "Escape search highlight"})
 
+-- remapping the terminal opening
+vim.keymap.set("n","<leader>tO","<cmd>terminal<cr>", { desc = "Open terminal here"})
