@@ -49,7 +49,8 @@ return {
             { "<leader>b", group = "Tabs" },
             --Maven
             { "<leader>m", group = "Maven" },
-
+            --Comment
+            { "<leader>/", desc = "Comment" },
         })
     end,
 }

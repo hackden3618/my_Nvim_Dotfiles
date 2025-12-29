@@ -6,15 +6,7 @@ return {
 		config = true,
 	},
 
-	-- Comment toggle
-	{
-		"numToStr/Comment.nvim",
-		config = function()
-			require("Comment").setup()
-		end,
-	},
-
-	-- Git signs
+    -- Git signs
 	{
 		"lewis6991/gitsigns.nvim",
 		config = function()
