@@ -25,9 +25,9 @@ return {
                     vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 
                     -- Code actions
-                    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, opts)
-                    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-                    vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, opts)
+                    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { desc = "Rename globally" })   -- opts)
+                    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code actions" }) --opts)
+                    vim.keymap.set("n", "<leader>cf", vim.lsp.buf.format, { desc = "Code Format" })       -- opts)
 
                     -- Diagnostics (NEW!)
                     vim.keymap.set("n", "gl", vim.diagnostic.open_float, opts)
@@ -58,9 +58,9 @@ return {
             -- Customize diagnostic signs in gutter (NEW!)
             local signs = {
                 { name = "DiagnosticSignError", text = "" },
-                { name = "DiagnosticSignWarn", text = "" },
-                { name = "DiagnosticSignHint", text = "" },
-                { name = "DiagnosticSignInfo", text = "" },
+                { name = "DiagnosticSignWarn",  text = "" },
+                { name = "DiagnosticSignHint",  text = "" },
+                { name = "DiagnosticSignInfo",  text = "" },
             }
 
             for _, sign in ipairs(signs) do
