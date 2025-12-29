@@ -27,52 +27,28 @@ return {
 		wk.add({
 			-- Project/File navigation
 			{ "<leader>p", group = "Project" },
-			{ "<leader>pv", desc = "File explorer" },
-			
 			-- Find (Telescope)
 			{ "<leader>f", group = "Find" },
-			{ "<leader>ff", desc = "Find files" },
-			{ "<leader>fg", desc = "Live grep" },
-			
 			-- Code/LSP
 			{ "<leader>c", group = "Code" },
-			{ "<leader>ca", desc = "Code actions" },
-			{ "<leader>cr", desc = "Rename symbol" },
-			
 			-- Debugging
 			{ "<leader>d", group = "Debug" },
-			{ "<leader>db", desc = "Toggle breakpoint" },
-			{ "<leader>dc", desc = "Continue/Start" },
-			{ "<leader>di", desc = "Step into" },
-			{ "<leader>do", desc = "Step over" },
-            { "<leader>dO", desc = "Step out" },
-            { "<leader>dt", desc = "Terminate" },
-            { "<leader>du", desc = "Toggle UI" },
-
             -- Java specific
             { "<leader>j", group = "Java" },
-            { "<leader>jo", desc = "Organize imports" },
-            { "<leader>jv", desc = "Extract variable" },
-            { "<leader>jc", desc = "Compile all Java files" },
-            { "<leader>jcd", desc = "Compile with JDBC" },
-            { "<leader>jm", desc = "Extract method" },
             -- Run code
             { "<leader>r", group = "Run" },
-            { "<leader>rj", desc = "Run Java" },
-            { "<leader>rjd", desc = "Run Java (JDBC)" },
-            { "<leader>rc", desc = "Run C" },
-            { "<leader>rp", desc = "Run Python" },
-
             -- Live server
             { "<leader>l", group = "Live" },
-            { "<leader>ls", desc = "Live server" },
-
             -- Git
             { "<leader>g", group = "Git" },
-
             -- Terminal
             { "<leader>t", group = "Terminal" },
-
+            --Windows
+            { "<leader>w", group = "Windows" },
+            --Tabs
+            { "<leader>b", group = "Tabs" },
+            --Maven
+            { "<leader>m", group = "Maven" },
 
         })
     end,

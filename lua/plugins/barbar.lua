@@ -35,8 +35,8 @@ return {
       -- =====================
       -- Buffer navigation
       -- =====================
-      map("n", "<leader>bp", "<Cmd>BufferPrevious<CR>", opts_map)
-      map("n", "<leader>bn", "<Cmd>BufferNext<CR>", opts_map)
+      map("n", "<leader>bh", "<Cmd>BufferPrevious<CR>", opts_map)
+      map("n", "<leader>bl", "<Cmd>BufferNext<CR>", opts_map)
 
       -- Jump to buffer by position
       for i = 1, 9 do

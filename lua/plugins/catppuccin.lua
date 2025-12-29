@@ -1,4 +1,3 @@
-
 return {
   {
     "catppuccin/nvim",
@@ -11,7 +10,7 @@ return {
         dark = "mocha",
       },
 
-      transparent_background = false,
+      transparent_background = true, -- false,
       term_colors = true,
 
       styles = {
