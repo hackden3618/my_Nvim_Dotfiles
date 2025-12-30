@@ -7,7 +7,7 @@ vim.keymap.set("v", "jk", "<Esc>")
 
 --keymap for window navigation
 vim.keymap.set("n","<leader>wv",":vsplit<cr>")
-vim.keymap.set("n","<leader>wh",":split<cr>")
+vim.keymap.set("n","<leader>wb",":split<cr>")
 
 vim.keymap.set("n","<leader>wh","<C-w><C-h>", { desc = "Move focus to left window"})
 vim.keymap.set("n","<leader>wl","<C-w><C-l>", { desc = "Move focus to right window"})
