@@ -123,16 +123,16 @@ return {
             { "<leader>mi",  desc = "Install" },
 
             -- Spring Boot
-            { "<leader>s",   group = "Spring Boot" },
-            { "<leader>sb",  desc = "Run (Maven)" },
-            { "<leader>sg",  desc = "Run (Gradle)" },
-            { "<leader>sj",  desc = "Build JAR" },
-            { "<leader>sr",  desc = "Run JAR" },
-            { "<leader>sc",  desc = "Clean & Run" },
-            { "<leader>st",  desc = "Run Tests" },
-            { "<leader>sn",  desc = "New Project" },
-            { "<leader>sp",  desc = "Open Properties" },
-            { "<leader>sk",  desc = "Kill (port 8080)" },
+            -- { "<leader>s",   group = "Spring Boot" },
+            -- { "<leader>sb",  desc = "Run (Maven)" },
+            -- { "<leader>sg",  desc = "Run (Gradle)" },
+            -- { "<leader>sj",  desc = "Build JAR" },
+            -- { "<leader>sr",  desc = "Run JAR" },
+            -- { "<leader>sc",  desc = "Clean & Run" },
+            -- { "<leader>st",  desc = "Run Tests" },
+            -- { "<leader>sn",  desc = "New Project" },
+            -- { "<leader>sp",  desc = "Open Properties" },
+            -- { "<leader>sk",  desc = "Kill (port 8080)" },
 
             -- Comment
             { "<leader>/",   desc = "Toggle Comment" },
