@@ -1,12 +1,10 @@
--- ==========================================
 -- SURROUND.LUA - Surround text with quotes, brackets, etc.
--- ==========================================
 -- Save as: lua/plugins/surround.lua
 
 return {
     {
         "kylechui/nvim-surround",
-        version = "*",     -- Use latest stable release
+        version = "*", -- Use latest stable release
         event = "VeryLazy",
         config = function()
             require("nvim-surround").setup({
