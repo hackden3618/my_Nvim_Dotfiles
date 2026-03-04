@@ -5,101 +5,114 @@ return {
             "williamboman/mason.nvim",
             "williamboman/mason-lspconfig.nvim",
             "hrsh7th/cmp-nvim-lsp",
+            { "folke/neodev.nvim", opts = {} }, -- Magic for Neovim Lua API
         },
+
         config = function()
-            -- Setup Mason first
+            require("neodev").setup()
             require("mason").setup()
 
-            -- Capabilities for autocompletion
+            local lspconfig = require("lspconfig")
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-            -- LSP keymaps using LspAttach autocmd
+            -- -----------------------------------------------------------------
+            -- 1. The "Standard" Keymaps
+            -- -----------------------------------------------------------------
             vim.api.nvim_create_autocmd("LspAttach", {
                 group = vim.api.nvim_create_augroup("UserLspConfig", {}),
                 callback = function(ev)
-                    local opts = { buffer = ev.buf, noremap = true, silent = true }
+                    local opts = { buffer = ev.buf, silent = true }
+                    local map = vim.keymap.set
 
-                    -- Navigation
-                    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-                    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-                    vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-
-                    -- Code actions
-                    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { desc = "Rename globally" })   -- opts)
-                    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code actions" }) --opts)
-                    vim.keymap.set("n", "<leader>cf", vim.lsp.buf.format, { desc = "Code Format" })       -- opts)
-
-                    -- Diagnostics (NEW!)
-                    vim.keymap.set("n", "gl", vim.diagnostic.open_float, opts)
-                    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-                    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-                    vim.keymap.set("n", "<leader>qd", vim.diagnostic.setloclist, {desc = "vim diagnostics"})
+                    map("n", "gd", vim.lsp.buf.definition, { desc = "Go to Definition", unpack(opts) })
+                    map("n", "gr", require("telescope.builtin").lsp_references, { desc = "References", unpack(opts) })
+                    map("n", "K", vim.lsp.buf.hover, { desc = "Hover Docs", unpack(opts) })
+                    map("n", "gi", vim.lsp.buf.implementation, { desc = "Go to Implementation", unpack(opts) })
+                    map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename Symbol", unpack(opts) })
+                    map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action", unpack(opts) })
+                    map("n", "<leader>f", function() vim.lsp.buf.format { async = true } end, { desc = "Format File", unpack(opts) })
                 end,
             })
 
-            -- Configure diagnostic display (NEW!)
-            vim.diagnostic.config({
-                virtual_text = {
-                    prefix = "●",
-                    source = "if_many",
-                },
-                float = {
-                    source = "always",
-                    border = "rounded",
-                    header = "",
-                    prefix = "",
-                },
-                signs = true,
-                underline = true,
-                update_in_insert = false,
-                severity_sort = true,
-            })
-
-            -- Customize diagnostic signs in gutter (NEW!)
-            local signs = {
-                { name = "DiagnosticSignError", text = "" },
-                { name = "DiagnosticSignWarn",  text = "" },
-                { name = "DiagnosticSignHint",  text = "" },
-                { name = "DiagnosticSignInfo",  text = "" },
-            }
-
-            for _, sign in ipairs(signs) do
-                vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
+            -- -----------------------------------------------------------------
+            -- 2. Modern Diagnostics UI
+            -- -----------------------------------------------------------------
+            local signs = { Error = " ", Warn = " ", Hint = "󰌵 ", Info = " " }
+            for type, icon in pairs(signs) do
+                local hl = "DiagnosticSign" .. type
+                vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
             end
 
-            -- Mason LSP setup with handlers
+            vim.diagnostic.config({
+                virtual_text = { prefix = "●", source = "if_many" },
+                float = { border = "rounded", source = "always" },
+                underline = true,
+                severity_sort = true,
+                update_in_insert = false,
+            })
+
+            -- -----------------------------------------------------------------
+            -- 3. Mason Server Handlers (The Heavy Lifting)
+            -- -----------------------------------------------------------------
             require("mason-lspconfig").setup({
                 ensure_installed = {
-                    "lua_ls",
-                    "jdtls",
-                    "clangd",
-                    "ts_ls",
-                    "html",
-                    "cssls",
+                    "lua_ls", "intelephense", "emmet_ls", "clangd", 
+                    "ts_ls", "html", "cssls", "pyright", "rust_analyzer"
                 },
                 automatic_installation = true,
                 handlers = {
-                    -- Default handler for all servers
+                    -- Default Setup
                     function(server_name)
-                        require("lspconfig")[server_name].setup({
+                        lspconfig[server_name].setup({ capabilities = capabilities })
+                    end,
+
+                    -- Python Configuration
+                    ["pyright"] = function()
+                        lspconfig.pyright.setup({
                             capabilities = capabilities,
+                            settings = {
+                                python = { analysis = { typeCheckingMode = "basic", autoSearchPaths = true } }
+                            }
                         })
                     end,
 
-                    -- Lua-specific config
-                    ["lua_ls"] = function()
-                        require("lspconfig").lua_ls.setup({
+                    -- Rust Configuration
+                    ["rust_analyzer"] = function()
+                        lspconfig.rust_analyzer.setup({
                             capabilities = capabilities,
                             settings = {
-                                Lua = {
-                                    diagnostics = {
-                                        globals = { "vim" },
-                                    },
-                                },
-                            },
+                                ["rust-analyzer"] = {
+                                    checkOnSave = { command = "clippy" },
+                                    procMacro = { enabled = true },
+                                }
+                            }
                         })
                     end,
-                },
+
+                    -- C/C++ Configuration
+                    ["clangd"] = function()
+                        lspconfig.clangd.setup({
+                            capabilities = capabilities,
+                            cmd = { "clangd", "--background-index", "--clang-tidy", "--header-insertion=iwyu" }
+                        })
+                    end,
+
+                    -- Lua Configuration
+                    ["lua_ls"] = function()
+                        lspconfig.lua_ls.setup({
+                            capabilities = capabilities,
+                            settings = { Lua = { diagnostics = { globals = { "vim" } } } }
+                        })
+                    end,
+
+                    -- HTML/PHP Logic
+                    ["html"] = function()
+                        lspconfig.html.setup({
+                            capabilities = capabilities,
+                            filetypes = { "html", "php" }
+                        })
+                    end,
+                }
             })
         end,
     },

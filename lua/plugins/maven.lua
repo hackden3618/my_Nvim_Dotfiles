@@ -1,32 +1,25 @@
+-- =============================================================================
+-- MAVEN.LUA - Maven build tool keymaps
+-- =============================================================================
+
 return {
-	{
-		"nvim-treesitter/nvim-treesitter",
-		ft = { "java", "xml" },
-		config = function()
-			-- Maven commands
-			vim.keymap.set("n", "<leader>mc", function()
-				vim.cmd("split | term mvn clean compile")
-			end, { desc = "Maven: Compile" })
+    {
+        "nvim-lua/plenary.nvim",
+        lazy = false,
 
-			vim.keymap.set("n", "<leader>mr", function()
-				vim.cmd("split | term mvn exec:java")
-			end, { desc = "Maven: Run" })
+        config = function()
+            local function mvn(cmd, desc)
+                vim.keymap.set("n", "<leader>m" .. cmd[1], function()
+                    vim.cmd("split | term mvn " .. cmd[2])
+                end, { desc = "Maven: " .. desc })
+            end
 
-			vim.keymap.set("n", "<leader>mt", function()
-				vim.cmd("split | term mvn test")
-			end, { desc = "Maven: Test" })
-
-			vim.keymap.set("n", "<leader>mp", function()
-				vim.cmd("split | term mvn package")
-			end, { desc = "Maven: Package" })
-
-			vim.keymap.set("n", "<leader>mC", function()
-				vim.cmd("split | term mvn clean")
-			end, { desc = "Maven: Clean" })
-
-			vim.keymap.set("n", "<leader>mi", function()
-				vim.cmd("split | term mvn clean install")
-			end, { desc = "Maven: Install" })
-		end,
-	},
+            mvn({ "c", "clean compile" }, "Compile")
+            mvn({ "r", "exec:java"      }, "Run")
+            mvn({ "t", "test"           }, "Test")
+            mvn({ "p", "package"        }, "Package")
+            mvn({ "C", "clean"          }, "Clean")
+            mvn({ "i", "clean install"  }, "Install")
+        end,
+    },
 }

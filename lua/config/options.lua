@@ -2,6 +2,10 @@
 vim.opt.number = true
 vim.opt.relativenumber = true
 
+-- line highlighting
+vim.opt.cursorline = true
+-- vim.opt.cursorlineopt = "number" -- Optional: highlight only the line number   
+
 -- Tabs and indentation
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2

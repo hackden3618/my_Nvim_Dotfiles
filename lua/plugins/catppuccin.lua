@@ -1,31 +1,35 @@
+-- =============================================================================
+-- CATPPUCCIN.LUA - Colorscheme
+-- =============================================================================
+
 return {
     {
         "catppuccin/nvim",
-        name = "catppuccin",
+        name     = "catppuccin",
         priority = 1000, -- load before everything else
         opts = {
-            flavour = "mocha", -- latte, frappe, macchiato, mocha
+            flavour = "mocha", -- latte | frappe | macchiato | mocha
             background = {
                 light = "latte",
-                dark = "mocha",
+                dark  = "mocha",
             },
 
-            transparent_background = true, -- false,
-            term_colors = true,
+            transparent_background = true,
+            term_colors            = true,
 
             styles = {
-                comments = { "italic" },
+                comments   = { "italic" },
                 conditionals = { "italic" },
-                loops = {},
-                functions = { "bold" },
-                keywords = {},
-                strings = {},
-                variables = {},
-                numbers = {},
-                booleans = {},
+                functions  = { "bold" },
+                loops      = {},
+                keywords   = {},
+                strings    = {},
+                variables  = {},
+                numbers    = {},
+                booleans   = {},
                 properties = {},
-                types = {},
-                operators = {},
+                types      = {},
+                operators  = {},
             },
 
             integrations = {
@@ -45,13 +49,13 @@ return {
                         information = { "underline" },
                     },
                 },
-                barbar = true,
-                gitsigns = true,
-                cmp = true,
+                barbar    = true,
+                gitsigns  = true,
+                cmp       = true,
                 telescope = true,
-                nvimtree = true,
+                nvimtree  = true,
                 which_key = true,
-                wilder = true,
+                wilder    = true,
             },
         },
 

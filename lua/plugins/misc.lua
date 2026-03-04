@@ -1,16 +1,12 @@
-return {
-	-- Auto pairs
-	{
-		"windwp/nvim-autopairs",
-		event = "InsertEnter",
-		config = true,
-	},
+-- =============================================================================
+-- MISC.LUA - Small utility plugins
+-- =============================================================================
 
-    -- Git signs
-	{
-		"lewis6991/gitsigns.nvim",
-		config = function()
-			require("gitsigns").setup()
-		end,
-	},
+return {
+    -- Auto-close brackets, quotes, etc.
+    {
+        "windwp/nvim-autopairs",
+        event  = "InsertEnter",
+        config = true,
+    },
 }
