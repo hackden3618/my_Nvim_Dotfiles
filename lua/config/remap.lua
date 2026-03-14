@@ -5,13 +5,9 @@ vim.keymap.set("n", "<leader>pv", vim.cmd.Ex )
 vim.keymap.set("i", "jj", "<Esc>")
 vim.keymap.set("v", "jk", "<Esc>")
 
--- remap command key
-vim.keymap.set("n", "cm", ":")
-
 --keymap for window navigation
 vim.keymap.set("n","<leader>wv",":vsplit<cr>")
 vim.keymap.set("n","<leader>wb",":split<cr>")
-vim.keymap.set("n","<leader>wc",":close<cr>")
 
 vim.keymap.set("n","<leader>wh","<C-w><C-h>", { desc = "Move focus to left window"})
 vim.keymap.set("n","<leader>wl","<C-w><C-l>", { desc = "Move focus to right window"})
