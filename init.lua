@@ -1,5 +1,13 @@
--- here is where everything is declared, and initiated :) I am happy I did this all myself
+--------------------------------------------------------------------------------
+-- Neovim IDE
+--------------------------------------------------------------------------------
+-- File: init.lua
+--
+-- Purpose:
+--   Main entry point for Neovim.
+--
+-- Notes:
+--   The entire configuration starts from lua/config/init.lua.
+--------------------------------------------------------------------------------
 
-require("config.options");
-require("config.remap");
-require("config.lazy");
+require("config")
