@@ -1,38 +1,124 @@
--- Bootstrap lazy.nvim
+--------------------------------------------------------------------------------
+-- Neovim IDE
+--------------------------------------------------------------------------------
+-- File: lua/config/lazy.lua
+--
+-- Purpose:
+--   Bootstraps Lazy.nvim and loads every plugin specification.
+--
+-- Responsibilities:
+--   • Install Lazy.nvim if missing.
+--   • Prepend Lazy.nvim to the runtime path.
+--   • Configure the plugin manager.
+--   • Import plugin specifications.
+--
+-- Notes:
+--   This file should remain generic. Plugin configuration belongs inside
+--   lua/plugins/.
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Constants
+--------------------------------------------------------------------------------
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-    if vim.v.shell_error ~= 0 then
-        vim.api.nvim_echo({
-            { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-            { out, "WarningMsg" },
-            { "\nPress any key to exit..." },
-        }, true, {})
-        vim.fn.getchar()
-        os.exit(1)
-    end
+
+--------------------------------------------------------------------------------
+-- Bootstrap Lazy.nvim
+--------------------------------------------------------------------------------
+
+if not vim.uv.fs_stat(lazypath) then
+    vim.fn.system({
+        "git",
+        "clone",
+        "--filter=blob:none",
+        "https://github.com/folke/lazy.nvim.git",
+        "--branch=stable",
+        lazypath,
+    })
 end
+
+--------------------------------------------------------------------------------
+-- Runtime Path
+--------------------------------------------------------------------------------
+
 vim.opt.rtp:prepend(lazypath)
 
--- Set leaders
-vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
+--------------------------------------------------------------------------------
+-- Setup
+--------------------------------------------------------------------------------
 
--- Setup lazy.nvim with increased timeout and throttling
 require("lazy").setup({
+
+    --------------------------------------------------------------------------------
+    -- Plugin Specifications
+    --------------------------------------------------------------------------------
+
     spec = {
-        { import = "plugins" },
-    },
-    install = { colorscheme = { "habamax" } },
-    checker = { enabled = true },
-}, {
-    git = {
-        timeout = 300, -- Increase timeout to 5 minutes
-        throttle = {
-            enabled = true,
-            rate = 1,
-            duration = 15 * 1000,
+
+        {
+            import = "plugins",
         },
+
     },
-})   
+
+    --------------------------------------------------------------------------------
+    -- Installation
+    --------------------------------------------------------------------------------
+
+    install = {
+
+        colorscheme = {
+            "catppuccin",
+            "habamax",
+        },
+
+    },
+
+    --------------------------------------------------------------------------------
+    -- Checker
+    --------------------------------------------------------------------------------
+
+    checker = {
+        enabled = true,
+        notify = false,
+    },
+
+    --------------------------------------------------------------------------------
+    -- Change Detection
+    --------------------------------------------------------------------------------
+
+    change_detection = {
+        notify = false,
+    },
+
+    --------------------------------------------------------------------------------
+    -- Performance
+    --------------------------------------------------------------------------------
+
+    performance = {
+
+        cache = {
+            enabled = true,
+        },
+
+        rtp = {
+
+            disabled_plugins = {
+
+                "gzip",
+                "matchit",
+                "matchparen",
+                "netrwPlugin",
+                "tarPlugin",
+                "tohtml",
+                "tutor",
+                "zipPlugin",
+
+            },
+
+        },
+
+    },
+
+})

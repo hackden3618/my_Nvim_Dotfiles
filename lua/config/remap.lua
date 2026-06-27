@@ -1,22 +1,191 @@
-vim.g.mapleader = " "
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+--------------------------------------------------------------------------------
+-- Neovim IDE
+--------------------------------------------------------------------------------
+-- File: lua/config/remap.lua
+--
+-- Purpose:
+--   Registers global editor keymaps.
+--
+-- Responsibilities:
+--   • Window management
+--   • Terminal management
+--   • Search utilities
+--   • Editing convenience
+--   • Navigation
+--
+-- Notes:
+--   Plugin-specific mappings belong inside the corresponding plugin module.
+--------------------------------------------------------------------------------
 
--- remap escape key
-vim.keymap.set("i", "jj", "<Esc>")
-vim.keymap.set("v", "jk", "<Esc>")
+--------------------------------------------------------------------------------
+-- Local Aliases
+--------------------------------------------------------------------------------
 
---keymap for window navigation
-vim.keymap.set("n", "<leader>wv", ":vsplit<cr>")
-vim.keymap.set("n", "<leader>wb", ":split<cr>")
-vim.keymap.set("n", "<leader>wc", ":close<cr>")
+local map = vim.keymap.set
 
-vim.keymap.set("n", "<leader>wh", "<C-w><C-h>", { desc = "Move focus to left window" })
-vim.keymap.set("n", "<leader>wl", "<C-w><C-l>", { desc = "Move focus to right window" })
-vim.keymap.set("n", "<leader>wj", "<C-w><C-j>", { desc = "Move focus to bottom window" })
-vim.keymap.set("n", "<leader>wk", "<C-w><C-k>", { desc = "Move focus to top window" })
+--------------------------------------------------------------------------------
+-- Helper Functions
+--------------------------------------------------------------------------------
 
---keymap for escaping the search highlight
-vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Escape search highlight" })
+--- Create common keymap options.
+---
+--- @param desc string Human-readable description.
+--- @return table
+local function keymap_opts(desc)
+    return {
+        noremap = true,
+        silent = true,
+        desc = desc,
+    }
+end
 
--- remapping the terminal opening
-vim.keymap.set("n", "<leader>tO", "<cmd>terminal<cr>", { desc = "Open terminal here" })
+--------------------------------------------------------------------------------
+-- File Explorer
+--------------------------------------------------------------------------------
+
+map(
+    "n",
+    "<leader>pv",
+    vim.cmd.Ex,
+    keymap_opts("Open netrw Explorer")
+)
+
+--------------------------------------------------------------------------------
+-- Escape Shortcuts
+--------------------------------------------------------------------------------
+
+map(
+    "i",
+    "jj",
+    "<Esc>",
+    keymap_opts("Exit Insert Mode")
+)
+
+map(
+    "v",
+    "jk",
+    "<Esc>",
+    keymap_opts("Exit Visual Mode")
+)
+
+--------------------------------------------------------------------------------
+-- Search
+--------------------------------------------------------------------------------
+
+map(
+    "n",
+    "<Esc>",
+    "<cmd>nohlsearch<CR>",
+    keymap_opts("Clear Search Highlight")
+)
+
+--------------------------------------------------------------------------------
+-- Window Management
+--------------------------------------------------------------------------------
+
+map(
+    "n",
+    "<leader>wv",
+    "<cmd>vsplit<CR>",
+    keymap_opts("Vertical Split")
+)
+
+map(
+    "n",
+    "<leader>wb",
+    "<cmd>split<CR>",
+    keymap_opts("Horizontal Split")
+)
+
+map(
+    "n",
+    "<leader>wc",
+    "<cmd>close<CR>",
+    keymap_opts("Close Window")
+)
+
+--------------------------------------------------------------------------------
+-- Window Navigation
+--------------------------------------------------------------------------------
+
+map(
+    "n",
+    "<leader>wh",
+    "<C-w>h",
+    keymap_opts("Focus Left Window")
+)
+
+map(
+    "n",
+    "<leader>wj",
+    "<C-w>j",
+    keymap_opts("Focus Lower Window")
+)
+
+map(
+    "n",
+    "<leader>wk",
+    "<C-w>k",
+    keymap_opts("Focus Upper Window")
+)
+
+map(
+    "n",
+    "<leader>wl",
+    "<C-w>l",
+    keymap_opts("Focus Right Window")
+)
+
+--------------------------------------------------------------------------------
+-- Terminal
+--------------------------------------------------------------------------------
+
+map(
+    "n",
+    "<leader>tO",
+    "<cmd>terminal<CR>",
+    keymap_opts("Open Terminal")
+)
+
+--------------------------------------------------------------------------------
+-- Better Line Movement
+--------------------------------------------------------------------------------
+
+map(
+    "n",
+    "J",
+    "mzJ`z",
+    keymap_opts("Join Lines")
+)
+
+map(
+    "n",
+    "<C-d>",
+    "<C-d>zz",
+    keymap_opts("Half Page Down")
+)
+
+map(
+    "n",
+    "<C-u>",
+    "<C-u>zz",
+    keymap_opts("Half Page Up")
+)
+
+map(
+    "n",
+    "n",
+    "nzzzv",
+    keymap_opts("Next Search Result")
+)
+
+map(
+    "n",
+    "N",
+    "Nzzzv",
+    keymap_opts("Previous Search Result")
+)
+
+--------------------------------------------------------------------------------
+-- End of File
+--------------------------------------------------------------------------------
