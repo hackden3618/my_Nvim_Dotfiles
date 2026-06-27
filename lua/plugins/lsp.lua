@@ -233,6 +233,7 @@ return {
 								"typescript",
 								"typescriptreact",
 								"tsx",
+								"jsx",
 							},
 						})
 					end,
@@ -251,6 +252,8 @@ return {
 								"scss",
 								"javascriptreact",
 								"typescriptreact",
+								"tsx",
+								"jsx",
 							},
 						})
 					end,

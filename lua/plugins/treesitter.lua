@@ -22,6 +22,7 @@ return {
                 "javascript",
                 "typescript",
                 "tsx",
+                "jsx",
                 "jsdoc",
 
                 "json",
