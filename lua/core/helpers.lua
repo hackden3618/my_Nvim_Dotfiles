@@ -106,9 +106,9 @@ end
 function M.safe_call(fn, desc)
     local ok, result = pcall(fn)
     if not ok then
-        vim.notify(
+        require("core.logging").error(
             ("PDE: error in %s: %s"):format(desc, tostring(result)),
-            vim.log.levels.ERROR
+            "PDE Error"
         )
         return nil
     end

@@ -14,8 +14,9 @@
 --   PARSER CATALOG — languages supported by this PDE:
 --     Core:       lua, vim, vimdoc, query
 --     JVM:        java
---     Systems:    c, cpp
+--     Systems:    c, cpp, rust
 --     Scripting:  python
+--     Go:         go, gomod, gosum, gowork
 --     Web:        html, css, javascript, typescript, tsx, jsx, jsdoc
 --     Data:       json, yaml, toml, markdown, markdown_inline
 --     Config:     prisma  ← Prisma ORM schema support
@@ -50,9 +51,16 @@ return {
         -- Systems
         "c",
         "cpp",
+        "rust",
 
         -- Scripting
         "python",
+
+        -- Go
+        "go",
+        "gomod",
+        "gosum",
+        "gowork",
 
         -- Web — Core
         "html",

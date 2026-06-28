@@ -21,10 +21,12 @@
 --   requiring pynvim as a system dependency. Performance is equivalent
 --   for typical command-line completion use cases.
 --
---   ARCHITECTURE DECISION — popupmenu renderer without border theme:
---   The border theme renderer adds visual chrome but costs additional
---   rendering work. The standard popupmenu_renderer is used to keep
---   the command-line UI lightweight.
+--   ARCHITECTURE DECISION — border theme renderer:
+--   wilder.popupmenu_border_theme() wraps the standard renderer with
+--   a floating border, giving a modern popup aesthetic. The devicons
+--   integration is intentionally excluded because wilder's devicon hook
+--   uses a Vimscript funcref internally that is incompatible with
+--   Neovim's Lua runtime, causing E704/E714 stack traces.
 --------------------------------------------------------------------------------
 
 local M = {}
@@ -85,7 +87,7 @@ function M.setup()
                 ),
             },
             border = "rounded",
-            left  = { " ", wilder.popupmenu_devicons() },
+            left  = { " " },
             right = { " ", wilder.popupmenu_scrollbar() },
             pumblend = 10,
         })

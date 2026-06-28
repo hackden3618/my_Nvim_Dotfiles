@@ -82,6 +82,31 @@ function M.setup()
     dap.configurations.cpp = dap.configurations.c
 
     --------------------------------------------------------------------------
+    -- Rust Configuration (reuses codelldb adapter)
+    --------------------------------------------------------------------------
+    --
+    -- Rust uses the same codelldb adapter as C/C++. No separate adapter
+    -- registration is needed.
+    --------------------------------------------------------------------------
+
+    dap.configurations.rust = {
+        {
+            name    = "Launch (codelldb)",
+            type    = "codelldb",
+            request = "launch",
+            program = function()
+                return vim.fn.input(
+                    "Path to executable: ",
+                    vim.fn.getcwd() .. "/target/debug/",
+                    "file"
+                )
+            end,
+            cwd          = "${workspaceFolder}",
+            stopOnEntry  = false,
+        },
+    }
+
+    --------------------------------------------------------------------------
     -- Java Configuration (remote attach)
     --------------------------------------------------------------------------
     --

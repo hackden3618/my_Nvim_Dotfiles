@@ -93,6 +93,15 @@ M.LSP = {
     -- Data / Config
     JSON        = "jsonls",
 
+    -- Go
+    GO          = "gopls",
+
+    -- Rust
+    RUST        = "rust_analyzer",
+
+    -- Python
+    PYTHON      = "pyright",
+
 }
 
 --------------------------------------------------------------------------------

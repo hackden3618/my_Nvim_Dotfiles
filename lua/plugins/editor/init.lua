@@ -16,6 +16,7 @@
 --   • Comment Engine   → Comment.nvim (language-aware commenting)
 --   • Surround         → nvim-surround (delimiter manipulation)
 --   • Navigation       → harpoon2     (file bookmarks)
+--   • Test Engine      → neotest      (multi-language test runner)
 --
 -- Notes:
 --   Plugin specifications are intentionally separate from their
@@ -35,5 +36,7 @@ return {
     require("plugins.editor.surround"),
 
     require("plugins.editor.harpoon"),
+
+    require("plugins.editor.neotest"),
 
 }

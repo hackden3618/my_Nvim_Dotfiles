@@ -54,6 +54,15 @@ M.ensure_installed = {
     -- Data / Config
     C.LSP.JSON,
 
+    -- Scripting
+    C.LSP.PYTHON,
+
+    -- Go
+    C.LSP.GO,
+
+    -- Rust
+    C.LSP.RUST,
+
 }
 
 --------------------------------------------------------------------------------
@@ -88,7 +97,11 @@ M.handlers = {
                     },
                     workspace = {
                         checkThirdParty = false,
-                        library        = vim.api.nvim_get_runtime_file("", true),
+                        library = {
+                            vim.fn.expand("$VIMRUNTIME/lua"),
+                            vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
+                            vim.fn.stdpath("config") .. "/lua",
+                        },
                     },
                     telemetry = {
                         enable = false,

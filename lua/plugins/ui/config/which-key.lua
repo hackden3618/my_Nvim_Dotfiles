@@ -76,6 +76,12 @@ return {
         { "<leader>d",  group = "Debug" },
         { "<leader>r",  group = "Run" },
 
+        -- Diagnostics / Trouble
+        { "<leader>x", group = "Diagnostics" },
+
+        -- Testing
+        { "<leader>T", group = "Testing" },
+
         -- Language-Specific
         { "<leader>j",  group = "Java" },
         { "<leader>m",  group = "Maven" },
