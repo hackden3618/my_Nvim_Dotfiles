@@ -1,191 +1,107 @@
 --------------------------------------------------------------------------------
--- Neovim IDE
+-- Neovim PDE
 --------------------------------------------------------------------------------
 -- File: lua/config/remap.lua
 --
 -- Purpose:
---   Registers global editor keymaps.
+--   Registers editor-wide keymaps that belong to no specific plugin.
 --
 -- Responsibilities:
---   • Window management
---   • Terminal management
---   • Search utilities
---   • Editing convenience
---   • Navigation
+--   • File explorer shortcut
+--   • Escape shortcuts for Insert and Visual mode
+--   • Search highlight clearing
+--   • Window management (split, close, navigate)
+--   • Terminal opening
+--   • Better movement primitives (join, half-page, search centering)
 --
 -- Notes:
---   Plugin-specific mappings belong inside the corresponding plugin module.
+--   Plugin-specific keymaps belong inside the corresponding plugin
+--   module (e.g. telescope keymaps live in plugins/editor/config/telescope.lua).
+--   This file is loaded before any plugin, so it must NOT depend on any
+--   plugin being available.
+--
+--   All keymaps use core.keymaps to ensure consistent defaults
+--   (noremap = true, silent = true) and future replaceability.
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
--- Local Aliases
+-- Imports
 --------------------------------------------------------------------------------
 
-local map = vim.keymap.set
-
---------------------------------------------------------------------------------
--- Helper Functions
---------------------------------------------------------------------------------
-
---- Create common keymap options.
----
---- @param desc string Human-readable description.
---- @return table
-local function keymap_opts(desc)
-    return {
-        noremap = true,
-        silent = true,
-        desc = desc,
-    }
-end
+local km = require("core.keymaps")
 
 --------------------------------------------------------------------------------
 -- File Explorer
 --------------------------------------------------------------------------------
 
-map(
-    "n",
+km.n(
     "<leader>pv",
     vim.cmd.Ex,
-    keymap_opts("Open netrw Explorer")
+    "Open netrw Explorer"
 )
 
 --------------------------------------------------------------------------------
 -- Escape Shortcuts
 --------------------------------------------------------------------------------
 
-map(
-    "i",
-    "jj",
-    "<Esc>",
-    keymap_opts("Exit Insert Mode")
-)
-
-map(
-    "v",
-    "jk",
-    "<Esc>",
-    keymap_opts("Exit Visual Mode")
-)
+km.i("jj", "<Esc>", "Exit Insert Mode")
+km.v("jk", "<Esc>", "Exit Visual Mode")
 
 --------------------------------------------------------------------------------
 -- Search
 --------------------------------------------------------------------------------
 
-map(
-    "n",
-    "<Esc>",
-    "<cmd>nohlsearch<CR>",
-    keymap_opts("Clear Search Highlight")
-)
+km.n("<Esc>", "<cmd>nohlsearch<CR>", "Clear Search Highlight")
 
 --------------------------------------------------------------------------------
 -- Window Management
 --------------------------------------------------------------------------------
 
-map(
-    "n",
-    "<leader>wv",
-    "<cmd>vsplit<CR>",
-    keymap_opts("Vertical Split")
-)
-
-map(
-    "n",
-    "<leader>wb",
-    "<cmd>split<CR>",
-    keymap_opts("Horizontal Split")
-)
-
-map(
-    "n",
-    "<leader>wc",
-    "<cmd>close<CR>",
-    keymap_opts("Close Window")
-)
+km.n("<leader>wv", "<cmd>vsplit<CR>", "Vertical Split")
+km.n("<leader>wb", "<cmd>split<CR>",  "Horizontal Split")
+km.n("<leader>wc", "<cmd>close<CR>",  "Close Window")
 
 --------------------------------------------------------------------------------
 -- Window Navigation
 --------------------------------------------------------------------------------
 
-map(
-    "n",
-    "<leader>wh",
-    "<C-w>h",
-    keymap_opts("Focus Left Window")
-)
-
-map(
-    "n",
-    "<leader>wj",
-    "<C-w>j",
-    keymap_opts("Focus Lower Window")
-)
-
-map(
-    "n",
-    "<leader>wk",
-    "<C-w>k",
-    keymap_opts("Focus Upper Window")
-)
-
-map(
-    "n",
-    "<leader>wl",
-    "<C-w>l",
-    keymap_opts("Focus Right Window")
-)
+km.n("<leader>wh", "<C-w>h", "Focus Left Window")
+km.n("<leader>wj", "<C-w>j", "Focus Lower Window")
+km.n("<leader>wk", "<C-w>k", "Focus Upper Window")
+km.n("<leader>wl", "<C-w>l", "Focus Right Window")
 
 --------------------------------------------------------------------------------
 -- Terminal
 --------------------------------------------------------------------------------
 
-map(
-    "n",
-    "<leader>tO",
-    "<cmd>terminal<CR>",
-    keymap_opts("Open Terminal")
-)
+km.n("<leader>tO", "<cmd>terminal<CR>", "Open Terminal (Built-in)")
 
 --------------------------------------------------------------------------------
 -- Better Line Movement
 --------------------------------------------------------------------------------
+--
+-- J:    Join lines while keeping cursor position stable.
+-- C-d:  Half-page down, cursor stays vertically centered.
+-- C-u:  Half-page up, cursor stays vertically centered.
+-- n/N:  Next/previous search result, cursor stays centered.
+--------------------------------------------------------------------------------
 
-map(
-    "n",
-    "J",
-    "mzJ`z",
-    keymap_opts("Join Lines")
-)
-
-map(
-    "n",
-    "<C-d>",
-    "<C-d>zz",
-    keymap_opts("Half Page Down")
-)
-
-map(
-    "n",
-    "<C-u>",
-    "<C-u>zz",
-    keymap_opts("Half Page Up")
-)
-
-map(
-    "n",
-    "n",
-    "nzzzv",
-    keymap_opts("Next Search Result")
-)
-
-map(
-    "n",
-    "N",
-    "Nzzzv",
-    keymap_opts("Previous Search Result")
-)
+km.n("J",     "mzJ`z",   "Join Lines (cursor stable)")
+km.n("<C-d>", "<C-d>zz", "Half Page Down (centered)")
+km.n("<C-u>", "<C-u>zz", "Half Page Up (centered)")
+km.n("n",     "nzzzv",   "Next Search Result (centered)")
+km.n("N",     "Nzzzv",   "Previous Search Result (centered)")
 
 --------------------------------------------------------------------------------
--- End of File
+-- Register which-key Groups
 --------------------------------------------------------------------------------
+--
+-- These labels make which-key display readable group names when
+-- the user pauses after pressing <leader>.
+--
+-- Plugin-specific groups are registered inside their own modules.
+--------------------------------------------------------------------------------
+
+km.group("<leader>p", "Project")
+km.group("<leader>w", "Windows")
+km.group("<leader>t", "Terminal")
