@@ -7,14 +7,26 @@
 --   UI subsystem manifest.
 --
 -- Responsibilities:
---   • Register all UI plugin specifications.
+--   • Register all UI plugin specifications for Lazy.nvim.
+--
+-- Subsystems registered here:
+--   • Theme Engine     → catppuccin (visual identity)
+--   • Command Engine   → which-key (keymap discoverability)
+--   • Status Engine    → lualine   (statusline)
+--   • Buffer Engine    → barbar    (buffer tabline)
+--   • Command Completion → wilder  (enhanced : / ? completion)
+--   • Notification Engine → nvim-notify (styled popup notifications)
+--   • Diagnostics Panel → trouble.nvim (workspace diagnostics)
+--   • TODO Engine      → todo-comments.nvim (project-wide tracking)
 --
 -- Notes:
 --   Plugin specifications are intentionally separate from their
---   implementation details.
+--   implementation details. No configuration logic lives here.
 --------------------------------------------------------------------------------
 
 return {
+
+    require("plugins.ui.notify"),
 
     require("plugins.ui.catppuccin"),
 
@@ -25,5 +37,9 @@ return {
     require("plugins.ui.barbar"),
 
     require("plugins.ui.wilder"),
+
+    require("plugins.ui.trouble"),
+
+    require("plugins.ui.todo-comments"),
 
 }

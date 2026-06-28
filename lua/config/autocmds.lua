@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
--- Neovim IDE
+-- Neovim PDE
 --------------------------------------------------------------------------------
 -- File: lua/config/autocmds.lua
 --
@@ -10,10 +10,17 @@
 --   • Highlight on yank
 --   • Restore cursor position
 --   • Resize splits
---   • Remove whitespace (future)
+--   • Plugin update notification (Lazy checker hook)
 --
 -- Notes:
 --   Plugin-specific autocommands belong inside the plugin configuration.
+--
+--   LAZY CHECKER HOOK:
+--   lazy.nvim's checker runs in the background and fires a User event
+--   "LazyCheck" when it finishes scanning for updates. We hook into that
+--   event here (rather than using checker.notify = true) so the notification
+--   goes through nvim-notify for a styled popup instead of the raw echo line.
+--   checker.notify remains false in lazy.lua to suppress the plain version.
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
@@ -21,6 +28,7 @@
 --------------------------------------------------------------------------------
 
 local api = vim.api
+local constants = require("core.constants")
 
 --------------------------------------------------------------------------------
 -- Autocommand Groups
@@ -46,7 +54,7 @@ api.nvim_create_autocmd("TextYankPost", {
         vim.highlight.on_yank({
 
             higroup = "IncSearch",
-            timeout = 200,
+            timeout = constants.TIME.YANK,
 
         })
 
@@ -95,5 +103,44 @@ api.nvim_create_autocmd("VimResized", {
     desc = "Resize splits equally",
 
     command = "tabdo wincmd =",
+
+})
+
+--------------------------------------------------------------------------------
+-- Plugin Update Notifications
+--------------------------------------------------------------------------------
+--
+-- Hooks into Lazy.nvim's background checker. When Lazy finishes scanning
+-- and finds available updates, a styled nvim-notify popup is shown.
+-- If everything is up to date, no notification is sent (no noise).
+--
+-- Depends on:
+--   • lazy.nvim   — fires the "LazyCheck" User event
+--   • nvim-notify — must be loaded before this event fires (priority 1100)
+--------------------------------------------------------------------------------
+
+api.nvim_create_autocmd("User", {
+
+    group   = general_group,
+    pattern = "LazyCheck",
+    desc    = "Notify when Lazy.nvim finds plugin updates",
+
+    callback = function()
+
+        local lazy_status = require("lazy.status")
+
+        if lazy_status.has_updates() then
+
+            local logging = require("core.logging")
+            local count   = lazy_status.updates()
+
+            logging.info(
+                count .. " plugin(s) have updates available.\nRun :Lazy update to apply.",
+                "󰚰  Plugin Updates"
+            )
+
+        end
+
+    end,
 
 })
