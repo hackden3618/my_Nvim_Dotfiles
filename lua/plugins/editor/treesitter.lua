@@ -11,6 +11,7 @@
 --
 -- Responsibilities:
 --   • Declare nvim-treesitter and its build step.
+--   • Load before a file is read so highlighting is ready for the first buffer.
 --   • Trigger `:TSUpdate` on build to keep parsers current.
 --   • Delegate parser list and options to config/treesitter.lua.
 --
@@ -28,7 +29,7 @@ return {
 
     build = ":TSUpdate",
 
-    event = { "BufReadPost", "BufNewFile" },
+    event = { "BufReadPre", "BufNewFile" },
 
     main = "nvim-treesitter.config",
 

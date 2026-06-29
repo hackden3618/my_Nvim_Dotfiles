@@ -58,7 +58,6 @@ M.ensure_installed = {
     C.LSP.PYTHON,
 
     -- Go
-    C.LSP.GO,
 
     -- Rust
     C.LSP.RUST,
