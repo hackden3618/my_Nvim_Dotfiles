@@ -131,7 +131,7 @@ opt.completeopt = {
 -- Files
 --------------------------------------------------------------------------------
 
-opt.swapfile = false
+opt.swapfile = true
 opt.backup = false
 opt.writebackup = false
 
