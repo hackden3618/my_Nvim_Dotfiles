@@ -19,22 +19,19 @@
 --
 -- Notes:
 --   INITIALIZATION ORDER (critical):
---     1. mason.setup()             — must run first
---     2. Build LSP capabilities    — from cmp_nvim_lsp
---     3. mason-lspconfig.setup()  — installs servers, runs handlers
---     4. LspAttach autocmd         — registers keymaps per buffer
---     5. diagnostics.setup()      — configures diagnostic UI
---
---   The capabilities object is built from cmp_nvim_lsp.default_capabilities()
---   and passed to every server handler. This tells each LSP server that
---   the client supports snippet completions and other cmp-specific features.
+--     1. Platform Spoofing       — must hook before setup if on Termux
+--     2. mason.setup()           — must run first
+--     3. Build LSP capabilities  — from cmp_nvim_lsp
+--     4. mason-lspconfig.setup() — installs servers, runs handlers
+--     5. LspAttach autocmd       — registers keymaps per buffer
+--     6. diagnostics.setup()     — configures diagnostic UI
 --------------------------------------------------------------------------------
 
 return {
 
     "neovim/nvim-lspconfig",
 
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "BufReadPost", "BufNewFile" },
 
     dependencies = {
         "williamboman/mason.nvim",
@@ -49,7 +46,19 @@ return {
         local diagnostics = require("plugins.lsp.config.diagnostics")
 
         --------------------------------------------------------------------
-        -- 1. Mason
+        -- 1. Mason Platform Override for Termux
+        --------------------------------------------------------------------
+        if vim.env.TERMUX_VERSION then
+            -- Fool Mason into pulling down standard Linux aarch64 binary packages
+            -- rather than throwing an "unsupported platform" guard fault.
+            local platform = require("mason-core.platform")
+            platform.is_android = false
+            platform.is_linux = true
+            platform.arch = "aarch64"
+        end
+
+        --------------------------------------------------------------------
+        -- 2. Mason Core Setup & Post-Install ELF Interpreter Patching
         --------------------------------------------------------------------
 
         require("mason").setup({
@@ -63,29 +72,42 @@ return {
             },
         })
 
+        if vim.env.TERMUX_VERSION then
+            local registry = require("mason-registry")
+            registry.refresh(function()
+                registry.on("package:install:success", function(pkg)
+                    local install_dir = pkg:get_install_path()
+                    -- Instantly target any newly installed compiled binaries and patch their dynamic link loader path to glibc
+                    vim.fn.jobstart(
+                        string.format("find %s -type f -executable -exec patchelf --set-interpreter $PREFIX/glibc/lib/ld-linux-aarch64.so.1 {} \\;", install_dir),
+                        { detach = true }
+                    )
+                end)
+            end)
+        end
+
         --------------------------------------------------------------------
-        -- 2. Build LSP Capabilities
-        --------------------------------------------------------------------
-        --
-        -- Merges default Neovim LSP capabilities with nvim-cmp's extended
-        -- capabilities (snippet support, additional completion kinds, etc.)
+        -- 3. Build LSP Capabilities
         --------------------------------------------------------------------
 
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
         --------------------------------------------------------------------
-        -- 3. Mason-lspconfig
-        --------------------------------------------------------------------
-        --
-        -- Ensures listed servers are installed and routes each through
-        -- a handler. Servers without a custom handler use the default.
+        -- 4. Mason-lspconfig & Intercept Execution Wrapper
         --------------------------------------------------------------------
 
+        if vim.env.TERMUX_VERSION then
+            local util = require('lspconfig.util')
+            util.on_setup = util.add_hook_before(util.on_setup, function(config)
+                -- If execution target targets a Mason package utility path, wrap execution via the glibc-runner subshell
+                if config.cmd and config.cmd[1] and config.cmd[1]:match("%.local/share/nvim/mason") then
+                    table.insert(config.cmd, 1, "grun")
+                end
+            end)
+        end
+
         -- Build the handlers table:
-        --   [1]        = default handler (required by mason-lspconfig)
-        --   [servername] = per-server override (from config/servers.lua)
         local handlers = {
-            -- Default: called for every server without a custom entry
             function(server_name)
                 require("lspconfig")[server_name].setup({
                     capabilities = capabilities,
@@ -107,23 +129,19 @@ return {
         })
 
         --------------------------------------------------------------------
-        -- 4. LspAttach — Register Keymaps
+        -- 5. LspAttach — Register Keymaps
         --------------------------------------------------------------------
 
         vim.api.nvim_create_autocmd("LspAttach", {
-
             group = vim.api.nvim_create_augroup("PDELspAttach", { clear = true }),
-
             desc = "Register buffer-local LSP keymaps on attach",
-
             callback = function(event)
                 lsp_keymaps.on_attach(event.buf)
             end,
-
         })
 
         --------------------------------------------------------------------
-        -- 5. Diagnostic UI
+        -- 6. Diagnostic UI
         --------------------------------------------------------------------
 
         diagnostics.setup()
@@ -131,3 +149,4 @@ return {
     end,
 
 }
+
