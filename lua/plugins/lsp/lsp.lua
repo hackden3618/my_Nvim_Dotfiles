@@ -22,7 +22,7 @@
 --     1. Platform Spoofing       — must hook before setup if on Termux
 --     2. mason.setup()           — must run first
 --     3. Build LSP capabilities  — from cmp_nvim_lsp
---     4. mason-lspconfig.setup() — installs servers, runs handlers
+--     4. Mason-lspconfig setup   — installs servers and configures wrappers
 --     5. LspAttach autocmd       — registers keymaps per buffer
 --     6. diagnostics.setup()     — configures diagnostic UI
 --------------------------------------------------------------------------------
@@ -31,7 +31,8 @@ return {
 
     "neovim/nvim-lspconfig",
 
-    event = { "BufReadPost", "BufNewFile" },
+    -- Preserved exactly for instant syntax highlighting upon loading a buffer
+    event = { "BufReadPre", "BufNewFile" },
 
     dependencies = {
         "williamboman/mason.nvim",
@@ -58,9 +59,8 @@ return {
         end
 
         --------------------------------------------------------------------
-        -- 2. Mason Core Setup & Post-Install ELF Interpreter Patching
+        -- 2. Mason Core Setup
         --------------------------------------------------------------------
-
         require("mason").setup({
             ui = {
                 border = require("core.constants").UI.BORDER,
@@ -72,45 +72,34 @@ return {
             },
         })
 
-        if vim.env.TERMUX_VERSION then
-            local registry = require("mason-registry")
-            registry.refresh(function()
-                registry.on("package:install:success", function(pkg)
-                    local install_dir = pkg:get_install_path()
-                    -- Instantly target any newly installed compiled binaries and patch their dynamic link loader path to glibc
-                    vim.fn.jobstart(
-                        string.format("find %s -type f -executable -exec patchelf --set-interpreter $PREFIX/glibc/lib/ld-linux-aarch64.so.1 {} \\;", install_dir),
-                        { detach = true }
-                    )
-                end)
-            end)
-        end
-
         --------------------------------------------------------------------
         -- 3. Build LSP Capabilities
         --------------------------------------------------------------------
-
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
         --------------------------------------------------------------------
-        -- 4. Mason-lspconfig & Intercept Execution Wrapper
+        -- 4. Mason-lspconfig & Runtime JIT Command Interceptors
         --------------------------------------------------------------------
-
-        if vim.env.TERMUX_VERSION then
-            local util = require('lspconfig.util')
-            util.on_setup = util.add_hook_before(util.on_setup, function(config)
-                -- If execution target targets a Mason package utility path, wrap execution via the glibc-runner subshell
-                if config.cmd and config.cmd[1] and config.cmd[1]:match("%.local/share/nvim/mason") then
-                    table.insert(config.cmd, 1, "grun")
-                end
-            end)
-        end
-
-        -- Build the handlers table:
         local handlers = {
+            -- Default handler called for every server without a custom entry
             function(server_name)
-                require("lspconfig")[server_name].setup({
+                local lspconfig = require("lspconfig")
+                
+                lspconfig[server_name].setup({
                     capabilities = capabilities,
+                    on_new_config = function(config, _)
+                        if vim.env.TERMUX_VERSION and config.cmd and config.cmd[1] then
+                            -- Intercept server execution right before boot if located in Mason storage
+                            if config.cmd[1]:match("%.local/share/nvim/mason") then
+                                -- Synchronously fix the binary linker to glibc on disk
+                                vim.fn.system(string.format("patchelf --set-interpreter $PREFIX/glibc/lib/ld-linux-aarch64.so.1 %s 2>/dev/null", config.cmd[1]))
+                                -- Inject the glibc-runner execution wrapper if present
+                                if vim.fn.executable("grun") == 1 then
+                                    table.insert(config.cmd, 1, "grun")
+                                end
+                            end
+                        end
+                    end
                 })
             end,
         }
@@ -131,7 +120,6 @@ return {
         --------------------------------------------------------------------
         -- 5. LspAttach — Register Keymaps
         --------------------------------------------------------------------
-
         vim.api.nvim_create_autocmd("LspAttach", {
             group = vim.api.nvim_create_augroup("PDELspAttach", { clear = true }),
             desc = "Register buffer-local LSP keymaps on attach",
@@ -143,10 +131,8 @@ return {
         --------------------------------------------------------------------
         -- 6. Diagnostic UI
         --------------------------------------------------------------------
-
         diagnostics.setup()
 
     end,
 
 }
-
