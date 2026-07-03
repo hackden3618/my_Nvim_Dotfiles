@@ -94,7 +94,6 @@ M.LSP = {
     JSON        = "jsonls",
 
     -- Go
-    GO          = "gopls",
 
     -- Rust
     RUST        = "rust_analyzer",

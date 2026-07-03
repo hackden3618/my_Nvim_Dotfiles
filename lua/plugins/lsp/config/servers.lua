@@ -36,34 +36,35 @@ local C = require("core.constants")
 -- Auto-install List
 --------------------------------------------------------------------------------
 
-M.ensure_installed = {
+M.ensure_installed = {}
 
-    -- General / Editor
-    C.LSP.LUA,
-
-    -- Systems
-    C.LSP.CLANGD,
-
-    -- Web — Core
-    C.LSP.TYPESCRIPT,
-    C.LSP.HTML,
-    C.LSP.CSS,
-    C.LSP.TAILWIND,
-    C.LSP.EMMET,
-
-    -- Data / Config
-    C.LSP.JSON,
-
-    -- Scripting
-    C.LSP.PYTHON,
-
-    -- Go
-    C.LSP.GO,
-
-    -- Rust
-    C.LSP.RUST,
-
-}
+-- M.ensure_installed = {
+--
+--     -- General / Editor
+--     C.LSP.LUA,
+--
+--     -- Systems
+--     C.LSP.CLANGD,
+--
+--     -- Web — Core
+--     C.LSP.TYPESCRIPT,
+--     C.LSP.HTML,
+--     C.LSP.CSS,
+--     C.LSP.TAILWIND,
+--     C.LSP.EMMET,
+--
+--     -- Data / Config
+--     C.LSP.JSON,
+--
+--     -- Scripting
+--     C.LSP.PYTHON,
+--
+--     -- Go
+--
+--     -- Rust
+--     C.LSP.RUST,
+--
+-- }
 
 --------------------------------------------------------------------------------
 -- Per-Server Configuration Overrides
