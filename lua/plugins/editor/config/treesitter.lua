@@ -37,51 +37,52 @@ return {
     -- Parsers
     --------------------------------------------------------------------------------
 
-    ensure_installed = {
-
-        -- Neovim / Editor Config
-        "lua",
-        "vim",
-        "vimdoc",
-        "query",
-
-        -- JVM
-        "java",
-
-        -- Systems
-        "c",
-        "cpp",
-        "rust",
-
-        -- Scripting
-        "python",
-
-        -- Go
-        "go",
-        "gomod",
-        "gosum",
-        "gowork",
-
-        -- Web — Core
-        "html",
-        "css",
-        "javascript",
-        "typescript",
-        "tsx",
-        "jsx",
-        "jsdoc",
-
-        -- Web — ORM
-        "prisma",
-
-        -- Data / Config
-        "json",
-        "yaml",
-        "toml",
-        "markdown",
-        "markdown_inline",
-
-    },
+    ensure_installed = {},
+    -- ensure_installed = {
+    --
+    --     -- Neovim / Editor Config
+    --     "lua",
+    --     "vim",
+    --     "vimdoc",
+    --     "query",
+    --
+    --     -- JVM
+    --     "java",
+    --
+    --     -- Systems
+    --     "c",
+    --     "cpp",
+    --     "rust",
+    --
+    --     -- Scripting
+    --     "python",
+    --
+    --     -- Go
+    --     "go",
+    --     "gomod",
+    --     "gosum",
+    --     "gowork",
+    --
+    --     -- Web — Core
+    --     "html",
+    --     "css",
+    --     "javascript",
+    --     "typescript",
+    --     "tsx",
+    --     "jsx",
+    --     "jsdoc",
+    --
+    --     -- Web — ORM
+    --     "prisma",
+    --
+    --     -- Data / Config
+    --     "json",
+    --     "yaml",
+    --     "toml",
+    --     "markdown",
+    --     "markdown_inline",
+    --
+    -- },
 
     --------------------------------------------------------------------------------
     -- Modules
