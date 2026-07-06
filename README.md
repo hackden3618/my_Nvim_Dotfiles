@@ -7,12 +7,12 @@
 
 ## What is this?
 
-This is not a Neovim configuration. This is a **Personal Development Environment** — a
+This is a **Personal Development Environment** - a
 software platform that runs on top of Neovim. Neovim is the runtime. This is the product.
 
 It is designed like a backend system: layered architecture, stable interfaces, no global state,
 full documentation, and explicit dependency management. Every plugin is a replaceable adapter
-over a named concept. No magic. No clever tricks.
+over a named concept.
 
 ---
 
