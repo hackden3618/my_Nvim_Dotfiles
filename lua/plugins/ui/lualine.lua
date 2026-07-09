@@ -33,7 +33,7 @@ return {
     },
 
     opts = function()
-        return require("plugins.ui.config.lualine")
+        return require("plugins.ui.config.lualine").get_config()
     end,
 
 }

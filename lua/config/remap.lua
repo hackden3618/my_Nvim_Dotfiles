@@ -105,3 +105,11 @@ km.n("N",     "Nzzzv",   "Previous Search Result (centered)")
 km.group("<leader>p", "Project")
 km.group("<leader>w", "Windows")
 km.group("<leader>t", "Terminal")
+km.group("<leader>u", "UI")
+
+--------------------------------------------------------------------------------
+-- Theme Cycling
+--------------------------------------------------------------------------------
+
+km.n("<leader>uT", "<Cmd>ThemeNext<CR>", "Theme: Cycle to Next")
+km.n("<leader>ut", "<Cmd>ThemeSet<CR>",  "Theme: Set (Tab-completes)")

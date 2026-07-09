@@ -115,12 +115,13 @@ the PDE's APIs. Plugins consume core APIs and never import each other.
 init.lua
     └── config/init.lua
             ├── config/options.lua
-            ├── config/remap.lua        → core.keymaps
-            ├── config/commands.lua     → core.logging
+            ├── config/remap.lua          → core.keymaps
+            ├── config/commands.lua       → core.logging
             ├── config/autocmds.lua
+            ├── config/init.lua           → core.theme (setup + init)
             └── config/lazy.lua
                     ├── plugins/ui/
-                    │       └── → core.icons, core.constants
+                    │       └── → core.icons, core.constants, core.theme(lualine)
                     ├── plugins/editor/
                     │       └── → core.keymaps, core.constants
                     ├── plugins/completion/
@@ -146,7 +147,16 @@ Plugins never import config. Core never imports plugins.
 
 | Engine | Adapter | Responsibility |
 |--------|---------|---------------|
-| Theme Engine | catppuccin/nvim | Visual identity, highlight groups |
+| Theme Engine | core/theme/ + catppuccin (bootstrap) | Visual identity, theme switching, persistence |
+| Theme: Tokyo Night | folke/tokyonight.nvim | Alternative theme (lazy) |
+| Theme: Everforest | sainnhe/everforest | Alternative theme (lazy) |
+| Theme: Gruvbox | sainnhe/gruvbox-material | Alternative theme (lazy) |
+| Theme: Kanagawa | rebelot/kanagawa.nvim | Alternative theme (lazy) |
+| Theme: Nord | shaunsingh/nord.nvim | Alternative theme (lazy) |
+| Theme: OneDark Pro | olimorris/onedarkpro.nvim | Alternative theme (lazy) |
+| Theme: Dracula | Mofiqul/dracula.nvim | Alternative theme (lazy) |
+| Theme: System | core/theme/system.lua | Terminal-adaptive (no plugin) |
+| Theme: Custom JSON | ~/.config/nvim/themes/*.json | User-defined themes (no plugin) |
 | Command Engine | which-key.nvim | Keymap discoverability and group labels |
 | Status Engine | lualine.nvim | Statusline: mode, git, LSP, diagnostics |
 | Buffer Engine | barbar.nvim | Buffer tabline with git/diagnostic badges |
@@ -266,18 +276,39 @@ config/             → implementation only
     │   ├── icons.lua           Icon registry (diagnostics, git, ui, kind, dap)
     │   ├── constants.lua       Named constants (UI, TIME, TS, LSP, DAP)
     │   ├── helpers.lua         Utilities (merge, executable, has_plugin)
-    │   └── paths.lua           Stdpath shortcuts (config, data, cache, lazy)
+    │   ├── paths.lua           Stdpath shortcuts (config, data, cache, lazy)
+    │   ├── theme.lua           Theme Engine entry point (delegates to theme/)
+    │   └── theme/
+    │       ├── init.lua        Theme API: set(), init(), setup_commands()
+    │       ├── registry.lua    Theme registry + JSON file hierarchy loader
+    │       ├── highlights.lua  nvim_set_hl from theme highlight definitions
+    │       ├── system.lua      Terminal-adaptive "system" theme generator
+    │       └── builtin.lua     Built-in theme metadata (catppuccin, et al.)
     │
     └── plugins/                Adapter Layer
         ├── ui/                 UI Subsystem
         │   ├── init.lua        Manifest
-        │   ├── catppuccin.lua  Theme Engine spec
+        │   ├── catppuccin.lua  Theme Engine spec (bootstrap)
+        │   ├── tokyonight.lua  Alternative theme (lazy)
+        │   ├── everforest.lua  Alternative theme (lazy)
+        │   ├── gruvbox.lua     Alternative theme (lazy)
+        │   ├── kanagawa.lua    Alternative theme (lazy)
+        │   ├── nord.lua        Alternative theme (lazy)
+        │   ├── onedarkpro.lua  Alternative theme (lazy)
+        │   ├── dracula.lua     Alternative theme (lazy)
         │   ├── which-key.lua   Command Engine spec
         │   ├── lualine.lua     Status Engine spec
         │   ├── barbar.lua      Buffer Engine spec
         │   ├── wilder.lua      Command Completion spec
         │   └── config/
-        │       ├── theme.lua       Visual identity (catppuccin opts)
+        │       ├── theme.lua           Visual identity (catppuccin opts)
+        │       ├── theme-tokyonight.lua
+        │       ├── theme-everforest.lua
+        │       ├── theme-gruvbox.lua
+        │       ├── theme-kanagawa.lua
+        │       ├── theme-nord.lua
+        │       ├── theme-onedarkpro.lua
+        │       ├── theme-dracula.lua
         │       ├── which-key.lua   Key groups
         │       ├── lualine.lua     Statusline layout
         │       ├── bufferline.lua  Barbar opts + keymaps
@@ -625,3 +656,28 @@ it. The colorscheme command is a required separate step.
 **Decision:** All keymaps use `core.keymaps.*`, all notifications use `core.logging.*`.  
 **Rationale:** Single point of change. If defaults evolve (e.g. adding `buffer` scope
 everywhere, or integrating `vim.notify` with a richer backend), only core changes.
+
+### AD-009: Theme Engine mirrors opencode's architecture
+
+**Decision:** The PDE Theme Engine uses opencode's theme system pattern:
+JSON-based theme definitions, an interactive `/theme` picker (`:Theme`),
+a loading hierarchy (builtin → user → project → cwd), and a terminal-adaptive
+"system" theme.
+
+**Rationale:** opencode's approach is the most ergonomic theme system in the
+terminal ecosystem. By adopting its patterns — semantic colour tokens, named
+colour definitions (`defs`), file-system theme discovery, and the `/theme`
+command — the PDE gains a theme system that is both powerful and familiar
+to opencode users.
+
+**Key design points:**
+- Theme colorscheme plugins remain lazy-loaded through lazy.nvim (catppuccin
+  is still the bootstrap theme with `priority = 1000`).
+- User-defined JSON themes in `~/.config/nvim/themes/*.json` are discovered
+  automatically and can override built-in themes.
+- Themes without a `colorscheme` field fall back to `:colorscheme default`
+  (clears previous highlights) then apply custom highlight definitions.
+- The `:Theme` command uses `vim.ui.select`, which routes through
+  telescope-ui-select (AD-004) when available.
+- Lualine theme resolution is handled by `core.theme.lualine_theme()`,
+  called dynamically on every switch.

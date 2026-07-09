@@ -42,4 +42,22 @@ return {
 
     require("plugins.ui.todo-comments"),
 
+    --------------------------------------------------------------------------
+    -- Alternative Themes (optional, lazy-loaded)
+    --------------------------------------------------------------------------
+
+    require("plugins.ui.tokyonight"),
+
+    require("plugins.ui.everforest"),
+
+    require("plugins.ui.gruvbox"),
+
+    require("plugins.ui.kanagawa"),
+
+    require("plugins.ui.nord"),
+
+    require("plugins.ui.onedarkpro"),
+
+    require("plugins.ui.dracula"),
+
 }

@@ -90,6 +90,7 @@ return {
         { "<leader>w",  group = "Windows" },
         { "<leader>t",  group = "Terminal" },
         { "<leader>l",  group = "Live" },
+        { "<leader>u",  group = "UI" },
 
     },
 

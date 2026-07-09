@@ -19,5 +19,6 @@ M.logging   = require("core.logging")
 M.paths     = require("core.paths")
 M.constants = require("core.constants")
 M.helpers   = require("core.helpers")
+M.theme     = require("core.theme")
 
 return M
