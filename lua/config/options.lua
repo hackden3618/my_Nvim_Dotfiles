@@ -23,8 +23,8 @@
 -- Local Aliases
 --------------------------------------------------------------------------------
 
-local opt = vim.opt
-local g = vim.g
+local opt              = vim.opt
+local g                = vim.g
 
 --------------------------------------------------------------------------------
 -- Disable netrw
@@ -34,8 +34,8 @@ local g = vim.g
 -- nvim-tree.lua (Explorer Engine) replaces netrw entirely.
 --------------------------------------------------------------------------------
 
-g.loaded_netrw       = 1
-g.loaded_netrwPlugin = 1
+g.loaded_netrw         = 1
+g.loaded_netrwPlugin   = 1
 
 --------------------------------------------------------------------------------
 -- Leader Keys
@@ -44,84 +44,84 @@ g.loaded_netrwPlugin = 1
 -- Must be defined before any mappings are created.
 --------------------------------------------------------------------------------
 
-g.mapleader = " "
-g.maplocalleader = "\\"
+g.mapleader            = " "
+g.maplocalleader       = "\\"
 
 --------------------------------------------------------------------------------
 -- User Interface
 --------------------------------------------------------------------------------
 
-opt.number = true
-opt.relativenumber = true
+opt.number             = true
+opt.relativenumber     = true
 
-opt.cursorline = true
+opt.cursorline         = true
 
-opt.signcolumn = "yes"
+opt.signcolumn         = "yes"
 
-opt.wrap = true
+opt.wrap               = true
 
-opt.scrolloff = 8
-opt.sidescrolloff = 8
+opt.scrolloff          = 8
+opt.sidescrolloff      = 8
 
-opt.termguicolors = true
+opt.termguicolors      = true
 
-opt.showmode = false
+opt.showmode           = false
 
-opt.laststatus = 3
+opt.laststatus         = 3
 
-opt.splitbelow = true
-opt.splitright = true
+opt.splitbelow         = true
+opt.splitright         = true
 
 --------------------------------------------------------------------------------
 -- Editing
 --------------------------------------------------------------------------------
 
-opt.expandtab = true
+opt.expandtab          = true
 
-opt.shiftwidth = 4
-opt.tabstop = 4
-opt.softtabstop = 4
+opt.shiftwidth         = 4
+opt.tabstop            = 4
+opt.softtabstop        = 4
 
-opt.smartindent = true
+opt.smartindent        = true
 
-opt.undofile = true
+opt.undofile           = true
 
-opt.backspace = {
+opt.backspace          = {
     "indent",
     "eol",
     "start",
 }
 
-opt.clipboard = "unnamedplus"
+opt.clipboard          = "unnamedplus"
 
 --------------------------------------------------------------------------------
 -- Searching
 --------------------------------------------------------------------------------
 
-opt.ignorecase = true
-opt.smartcase = true
+opt.ignorecase         = true
+opt.smartcase          = true
 
-opt.hlsearch = true
-opt.incsearch = true
+opt.hlsearch           = true
+opt.incsearch          = true
 
 --------------------------------------------------------------------------------
 -- Mouse
 --------------------------------------------------------------------------------
 
-opt.mouse = "a"
+opt.mouse              = "a"
 
 --------------------------------------------------------------------------------
 -- Timing
 --------------------------------------------------------------------------------
 
-opt.updatetime = 250
-opt.timeoutlen = 300
+opt.updatetime         = 250
+opt.timeoutlen         = 300
 
 --------------------------------------------------------------------------------
 -- Completion
 --------------------------------------------------------------------------------
 
-opt.completeopt = {
+opt.completeopt        = {
     "menu",
     "menuone",
     "noselect",
@@ -131,9 +131,9 @@ opt.completeopt = {
 -- Files
 --------------------------------------------------------------------------------
 
-opt.swapfile = true
-opt.backup = false
-opt.writebackup = false
+opt.swapfile           = true
+opt.backup             = false
+opt.writebackup        = false
 
 --------------------------------------------------------------------------------
 -- Folding
@@ -141,8 +141,11 @@ opt.writebackup = false
 --
 -- Treesitter will later replace these settings.
 --------------------------------------------------------------------------------
-
-opt.foldmethod = "manual"
+vim.opt.foldmethod     = "expr"
+vim.opt.foldexpr       = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldenable     = true
+vim.opt.foldlevelstart = 99 -- Open all folds on file load
+-- opt.foldmethod = "manual"
 
 --------------------------------------------------------------------------------
 -- End of File

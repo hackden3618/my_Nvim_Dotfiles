@@ -69,7 +69,7 @@ return {
                 require("core.constants").DAP.JAVA_DEBUG,
                 require("core.constants").DAP.JAVA_TEST,
             },
-            automatic_installation = true,
+            automatic_installation = false,
             handlers = {},
         },
 
