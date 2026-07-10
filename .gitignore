@@ -1,3 +1,4 @@
 *lock.json
 *.log
 *.env
+lua/.theme
